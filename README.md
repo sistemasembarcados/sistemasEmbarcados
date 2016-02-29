@@ -16,7 +16,14 @@ Ou talvez me encontrar no Twitter para receber as ultimas noticias quentinhas: [
 E não esqueça que também tem o email, sistemasembarcadosbr@gmail.com
 
 Conheça também nossos grupos do Facebook:
-Arduino BR – https://www.facebook.com/groups/microcontroladorarduinobr/
-Raspberry Pi BR – https://www.facebook.com/groups/raspberrybr/
-Odroid BR – https://www.facebook.com/groups/odroidBR/
-Sistemas Embarcados BR – https://www.facebook.com/groups/SistemasEmbarcadosBR/ 
+Arduino BR 
+https://www.facebook.com/groups/microcontroladorarduinobr/
+
+Raspberry Pi BR 
+https://www.facebook.com/groups/raspberrybr/
+
+Odroid BR 
+https://www.facebook.com/groups/odroidBR/
+
+Sistemas Embarcados BR 
+https://www.facebook.com/groups/SistemasEmbarcadosBR/ 
