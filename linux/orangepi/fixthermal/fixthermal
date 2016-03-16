@@ -1,0 +1,67 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          fixthermal
+# Required-Start:
+# Required-Stop:
+# Default-Start: 2 3 4 5
+# Default-Stop:
+# Short-Description: Override patched fex/script.bin settings to get rid of thermal/stability problems on H3 based Orange Pi SBCs.
+# Description:
+### END INIT INFO
+
+# based on fix-thermal-problems.sh http://kaiser-edv.de
+
+# instalation
+# cp fixthermal /etc/init.d/
+# chmod +x /etc/init.d/fixthermal
+# update-rc.d fixthermal defaults
+
+SCRIPT_BIN_OPIS="/boot/opibins/script_fix_thermal_OPis.bin"
+SCRIPT_BIN_ONE="/boot/opibins/script_fix_thermal_OpiOne.bin"
+HWTYPE=$(awk -F" " '/^Hardware/ {print $3}' </proc/cpuinfo)
+. /lib/lsb/init-functions
+
+function fixthermal() {
+	# orange pi
+	if [ $HWTYPE == "sun8i" ]; then
+		TOTALMEM=$(awk -F" " '/^MemTotal/ {print $2}' </proc/meminfo)
+		SHA1SUM_SCRIPT_BIN_BOOT=$(sha1sum /boot/script.bin | awk '{ print $1 }')
+		
+		# orange pi one
+		if [ $TOTALMEM -lt 550000 ]; then   
+			SHA1SUM_SCRIPT_BIN=$(sha1sum $SCRIPT_BIN_ONE | awk '{ print $1 }')
+			CPFILE="$SCRIPT_BIN_ONE"
+		# other opis
+		else
+			SHA1SUM_SCRIPT_BIN=$(sha1sum $SCRIPT_BIN_OPIS | awk '{ print $1 }')
+			CPFILE="$SCRIPT_BIN_OPIS"
+		fi
+		
+		# replace /boot/script.bin
+		[ $SHA1SUM_SCRIPT_BIN_BOOT != $SHA1SUM_SCRIPT_BIN ] && {
+			if [ -f $CPFILE ]; then
+				log_end_msg 0
+				log_action_msg "copying $CPFILE /boot/script.bin"
+				mount -o remount,rw /boot &>/dev/null
+				cp -a "$CPFILE" /boot/script.bin
+				log_action_msg "change script.bin. Rebooting in 5s"
+				sleep 5
+				reboot
+			fi
+		}
+		
+	fi
+	return 0
+}
+
+case "$1" in
+  start)
+    log_daemon_msg "Starting fixthermal" "$HWTYPE"
+    fixthermal
+    log_end_msg $?
+    ;;
+  *)
+    echo "Usage: $0 start" >&2
+    exit 3
+    ;;
+esac
